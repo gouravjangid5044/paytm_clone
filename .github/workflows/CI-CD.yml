@@ -1,4 +1,4 @@
-name: CI/CD Workflow
+name: CI/CD for Puppeteer Tests
 
 on:
   push:
@@ -9,34 +9,39 @@ on:
       - main
 
 jobs:
-  run-tests:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Node.js
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Use a stable Node.js version
+          node-version: '18'
 
-      # Install dependencies
-      - name: Install Dependencies
+      - name: Install Puppeteer dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            gconf-service \
+            libasound2 \
+            libatk1.0-0 \
+            libcups2 \
+            libdbus-1-3 \
+            libgconf-2-4 \
+            libnspr4 \
+            libnss3 \
+            libxss1 \
+            libxtst6 \
+            xdg-utils \
+            libxrandr2
+
+      - name: Install npm dependencies
         run: npm install
 
-      # Run Puppeteer tests
-      - name: Run Tests
-        run: npm test
+      - name: Run Puppeteer tests
         env:
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true" # Skip Chromium download for faster CI
-
-      # Install Chromium (required for Puppeteer in CI environments)
-      - name: Install Chromium
-        run: sudo apt-get update && sudo apt-get install -y chromium-browser
-
-      # Run Puppeteer tests with Chromium
-      - name: Run Puppeteer Tests with Chromium
-        run: node tests/site.test.js
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
+        run: npm test
