@@ -45,3 +45,42 @@ jobs:
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
         run: npm test
+
+      # Send Slack Notification for Success
+      - name: Send Slack Notification - Success
+        if: success()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "text": ":white_check_mark: Puppeteer tests passed successfully! 🎉",
+            "attachments": [
+              {
+                "color": "#36a64f",
+                "fields": [
+                  { "title": "Branch", "value": "${{ github.ref_name }}", "short": true },
+                  { "title": "Commit", "value": "${{ github.sha }}", "short": true }
+                ]
+              }
+            ]
+          }' $SLACK_WEBHOOK_URL
+
+      # Send Slack Notification for Failure
+      - name: Send Slack Notification - Failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "text": ":x: Puppeteer tests failed! 💥",
+            "attachments": [
+              {
+                "color": "#ff0000",
+                "fields": [
+                  { "title": "Branch", "value": "${{ github.ref_name }}", "short": true },
+                  { "title": "Commit", "value": "${{ github.sha }}", "short": true },
+                  { "title": "Error Logs", "value": "Check logs in GitHub Actions for details." }
+                ]
+              }
+            ]
+          }' $SLACK_WEBHOOK_URL
