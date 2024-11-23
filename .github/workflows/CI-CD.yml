@@ -14,12 +14,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Corrected action reference
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3  # Corrected action reference
         with:
-          node-version: '18'  # Specify Node version, use the one compatible with your project
+          node-version: '18'  # Specify Node version
 
       - name: Install dependencies
         run: |
@@ -27,7 +27,7 @@ jobs:
 
       - name: Run tests
         run: |
-          node tests/site.test.js  # Run your specific test command
+          node tests/site.test.js  # Your test command
 
   # Optional deployment job
   deploy:
@@ -35,13 +35,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Corrected action reference
 
       - name: Deploy to Production (example)
         run: |
           # Add your deployment commands here, e.g., for AWS, Heroku, etc.
           echo "Deploying to production..."
-          
+
       - name: Notify deployment success
         uses: some-notification-action  # Optional: add notification for deployment success (Slack, Email, etc.)
         with:
