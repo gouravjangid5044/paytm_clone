@@ -1,0 +1,27 @@
+{
+  "name": "paytm_clone",
+  "version": "1.0.0",
+  "description": "https://github.com/gouravjangid5044/paytm_clone/assets/67137827/d6082125-933e-45a2-a72d-b394082e3e14",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gouravjangid5044/paytm_clone.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gouravjangid5044/paytm_clone/issues"
+  },
+  "homepage": "https://github.com/gouravjangid5044/paytm_clone#readme",
+  "dependencies": {
+    "chai": "^5.1.2",
+    "path": "^0.12.7",
+    "puppeteer": "^23.9.0"
+  }
+}

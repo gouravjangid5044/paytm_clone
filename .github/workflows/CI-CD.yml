@@ -1,0 +1,48 @@
+name: Paytm Clone CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Specify Node version, use the one compatible with your project
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Run tests
+        run: |
+          node tests/site.test.js  # Run your specific test command
+
+  # Optional deployment job
+  deploy:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to Production (example)
+        run: |
+          # Add your deployment commands here, e.g., for AWS, Heroku, etc.
+          echo "Deploying to production..."
+          
+      - name: Notify deployment success
+        uses: some-notification-action  # Optional: add notification for deployment success (Slack, Email, etc.)
+        with:
+          # Add necessary configuration here for notifications
