@@ -1,40 +1,19 @@
-# Use the official Node.js image from the Docker Hub
-FROM node:18-slim
+FROM node:18-slim  # Use a slim Node.js base image for efficiency
 
-# Install necessary dependencies for Puppeteer (to run Chromium in headless mode)
-RUN apt-get update && apt-get install -y \
-  wget \
-  ca-certificates \
-  fonts-liberation \
-  libappindicator3-1 \
-  libasound2 \
-  libatk-bridge2.0-0 \
-  libatk1.0-0 \
-  libcups2 \
-  libdrm2 \
-  libgdk-pixbuf2.0-0 \
-  libnspr4 \
-  libnss3 \
-  libx11-xcb1 \
-  libxcomposite1 \
-  libxdamage1 \
-  libxrandr2 \
-  xdg-utils \
-  --no-install-recommends \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+# Copy package.json and package-lock.json (if present)
+COPY package*.json ./  # Optimized copy for common scenarios
 
-# Copy package.json and package-lock.json (if exists)
-COPY package*.json ./
+# Install dependencies based on package.json
+RUN npm ci  # Use npm ci for deterministic builds (optional)
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of your application files (including tests)
+# Copy your application code and test files
 COPY . .
 
-# Run the Puppeteer tests (from the tests directory)
-CMD ["npm", "test"]
+# Install additional dependencies required by Puppeteer (optional)
+RUN apt-get update && apt-get install -y fonts-noto-color-emoji fonts-noto-sans fonts-liberation  # Example dependencies
+
+EXPOSE 9222  # Expose headless Chrome port (optional)
+
+CMD [ "npm", "test" ]  # Run tests using npm test
