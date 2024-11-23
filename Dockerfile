@@ -1,7 +1,7 @@
 # Use the official Node.js image from the Docker Hub
 FROM node:18-slim
 
-# Install necessary dependencies for Puppeteer
+# Install necessary dependencies for Puppeteer (to run Chromium in headless mode)
 RUN apt-get update && apt-get install -y \
   wget \
   ca-certificates \
@@ -32,11 +32,8 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
-# Copy the rest of your application files
+# Copy the rest of your application files (including tests)
 COPY . .
 
-# Expose port 3000 (or whichever port your app uses)
-EXPOSE 3000
-
-# Command to run your app
-CMD ["node", "index.js"]
+# Run the Puppeteer tests (from the tests directory)
+CMD ["npm", "test"]
