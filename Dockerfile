@@ -1,63 +1,42 @@
-# # Use official Node.js image as the base image
-# FROM node:18-slim
+# Use the official Node.js image from the Docker Hub
+FROM node:18-slim
 
-# # Install dependencies required by Puppeteer (including missing libraries for Chromium)
-# RUN apt-get update && apt-get install -y \
-#   gconf-service \
-#   libasound2 \
-#   libatk1.0-0 \
-#   libcups2 \
-#   libdbus-1-3 \
-#   libgconf-2-4 \
-#   libnspr4 \
-#   libnss3 \
-#   libxss1 \
-#   libxtst6 \
-#   xdg-utils \
-#   libxrandr2 \
-#   libatk-bridge-2.0-0 \
-#   libgbm1 \
-#   libgtk-3-0 \
-#   libpango-1.0-0 \
-#   libpixman-1-0 \
-#   libxcomposite1 \
-#   libxdamage1 \
-#   libxrandr2 \
-#   && rm -rf /var/lib/apt/lists/*
+# Install necessary dependencies for Puppeteer
+RUN apt-get update && apt-get install -y \
+  wget \
+  ca-certificates \
+  fonts-liberation \
+  libappindicator3-1 \
+  libasound2 \
+  libatk-bridge2.0-0 \
+  libatk1.0-0 \
+  libcups2 \
+  libgdk-pixbuf2.0-0 \
+  libnspr4 \
+  libnss3 \
+  libx11-xcb1 \
+  libxcomposite1 \
+  libxdamage1 \
+  libxrandr2 \
+  xdg-utils \
+  --no-install-recommends \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
-# # Set working directory inside the container
-# WORKDIR /app
+# Set the working directory in the container
+WORKDIR /usr/src/app
 
-# # Copy package.json and package-lock.json
-# COPY package*.json ./
+# Copy package.json and package-lock.json (if exists)
+COPY package*.json ./
 
-# # Install dependencies
-# RUN npm install
+# Install dependencies
+RUN npm install
 
-# # Copy the rest of the application code
-# COPY . .
-
-# # Expose the port that your app will run on (if needed)
-# # EXPOSE 3000
-
-# # Command to run tests inside the container
-# CMD ["npm", "test"]
-
-
-
-
-
-# Use the official nginx image as the base
-FROM nginx:alpine
-
-# Set the working directory inside the container
-WORKDIR /usr/share/nginx/html
-
-# Copy the HTML, CSS, and JS files into the container
+# Copy the rest of your application files
 COPY . .
 
-# Expose port 80 to make the app accessible
-EXPOSE 80
+# Expose port 3000 (or whichever port your app uses)
+EXPOSE 3000
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Command to run your app
+CMD ["node", "index.js"]
