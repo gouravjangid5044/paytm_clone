@@ -1,4 +1,4 @@
-name: Paytm Clone CI/CD Pipeline
+name: CI/CD Workflow
 
 on:
   push:
@@ -9,40 +9,34 @@ on:
       - main
 
 jobs:
-  setup:
+  run-tests:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3  # Corrected action reference
+      # Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
+      # Set up Node.js
       - name: Set up Node.js
-        uses: actions/setup-node@v3  # Corrected action reference
+        uses: actions/setup-node@v3
         with:
-          node-version: '18'  # Specify Node version
+          node-version: '18' # Use a stable Node.js version
 
-      - name: Install dependencies
-        run: |
-          npm install
+      # Install dependencies
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Run tests
-        run: |
-          node tests/site.test.js  # Your test command
+      # Run Puppeteer tests
+      - name: Run Tests
+        run: npm test
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true" # Skip Chromium download for faster CI
 
-  # Optional deployment job
-  deploy:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3  # Corrected action reference
+      # Install Chromium (required for Puppeteer in CI environments)
+      - name: Install Chromium
+        run: sudo apt-get update && sudo apt-get install -y chromium-browser
 
-      - name: Deploy to Production (example)
-        run: |
-          # Add your deployment commands here, e.g., for AWS, Heroku, etc.
-          echo "Deploying to production..."
-
-      - name: Notify deployment success
-        uses: some-notification-action  # Optional: add notification for deployment success (Slack, Email, etc.)
-        with:
-          # Add necessary configuration here for notifications
+      # Run Puppeteer tests with Chromium
+      - name: Run Puppeteer Tests with Chromium
+        run: node tests/site.test.js
