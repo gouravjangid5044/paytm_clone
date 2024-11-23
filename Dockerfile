@@ -1,19 +1,18 @@
-FROM node:18-slim  # Use a slim Node.js base image for efficiency
+FROM node:18-alpine  # Use slim Node.js image for smaller size
 
 WORKDIR /app
 
 # Copy package.json and package-lock.json (if present)
-COPY package*.json ./  # Optimized copy for common scenarios
+COPY package*.json ./
 
-# Install dependencies based on package.json
-RUN npm ci  # Use npm ci for deterministic builds (optional)
+# Install dependencies
+RUN npm install
 
-# Copy your application code and test files
-COPY . .
+# Copy test directory
+COPY tests ./tests
 
-# Install additional dependencies required by Puppeteer (optional)
-RUN apt-get update && apt-get install -y fonts-noto-color-emoji fonts-noto-sans fonts-liberation  # Example dependencies
+# Expose port for Puppeteer (optional, for debugging)
+# EXPOSE 9222  # uncomment if needed
 
-EXPOSE 9222  # Expose headless Chrome port (optional)
-
-CMD [ "npm", "test" ]  # Run tests using npm test
+# Run the tests
+CMD [ "npm", "test" ]
